@@ -13,11 +13,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdbc.url>jdbc:mysql://localhost/fordownload?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false&amp;serverTimezone=UTC</jdbc.url>
         <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
+        <jdbc.className>com.mysql.cj.jdbc.MysqlDataSource</jdbc.className>
         <jdbc.username>root</jdbc.username>
         <jdbc.password>123456</jdbc.password>
-        <jdbc.minConnectionsPerPartition>5</jdbc.minConnectionsPerPartition>
-        <jdbc.maxConnectionsPerPartition>10</jdbc.maxConnectionsPerPartition>
-        <jdbc.partitionCount>1</jdbc.partitionCount>
+        <jdbc.maximumPoolSize>100</jdbc.maximumPoolSize>
+        <jdbc.serverName>localhost</jdbc.serverName>
+        <jdbc.port>3306</jdbc.port>
         <jdbc.schema>fordownload</jdbc.schema>
     </properties>
 
@@ -79,9 +80,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp</artifactId>
-            <version>0.8.0.RELEASE</version>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.4.7</version>
             <scope>compile</scope>
         </dependency>
 
@@ -99,6 +100,18 @@
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
             <version>3.8.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-all</artifactId>
+            <version>1.2.6</version>
         </dependency>
 
         <dependency>

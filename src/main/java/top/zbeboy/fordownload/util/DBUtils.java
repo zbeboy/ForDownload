@@ -1,19 +1,16 @@
 package top.zbeboy.fordownload.util;
 
-import com.jolbox.bonecp.BoneCP;
-import com.jolbox.bonecp.BoneCPConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang.math.NumberUtils;
-import org.jooq.*;
-import org.jooq.conf.Settings;
+import org.jooq.Configuration;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 
-import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -21,7 +18,7 @@ import java.util.Properties;
  */
 public class DBUtils {
 
-    private static BoneCP connectionPool;
+    private static HikariDataSource connectionPool;
 
     static {
         try {
@@ -31,14 +28,16 @@ public class DBUtils {
             Class.forName(properties.getProperty("jdbc.driver"));
 
             // setup the connection pool
-            BoneCPConfig config = new BoneCPConfig();
-            config.setJdbcUrl(properties.getProperty("jdbc.url")); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
-            config.setUsername(properties.getProperty("jdbc.username"));
-            config.setPassword(properties.getProperty("jdbc.password"));
-            config.setMinConnectionsPerPartition(NumberUtils.toInt(properties.getProperty("jdbc.minConnectionsPerPartition","5")));
-            config.setMaxConnectionsPerPartition(NumberUtils.toInt(properties.getProperty("jdbc.maxConnectionsPerPartition","10")));
-            config.setPartitionCount(NumberUtils.toInt(properties.getProperty("jdbc.partitionCount","1")));
-            connectionPool = new BoneCP(config); // setup the connection pool
+            HikariConfig config = new HikariConfig();
+            config.setMaximumPoolSize(NumberUtils.toInt(properties.getProperty("jdbc.maximumPoolSize","100")));
+            config.setDataSourceClassName(properties.getProperty("jdbc.className"));
+            config.addDataSourceProperty("serverName", properties.getProperty("jdbc.serverName"));
+            config.addDataSourceProperty("port", properties.getProperty("jdbc.port"));
+            config.addDataSourceProperty("databaseName", properties.getProperty("jdbc.schema"));
+            config.addDataSourceProperty("user", properties.getProperty("jdbc.username"));
+            config.addDataSourceProperty("password", properties.getProperty("jdbc.password"));
+
+            connectionPool = new HikariDataSource(config); // setup the connection pool
 
         } catch (Exception e) {
             e.printStackTrace();
